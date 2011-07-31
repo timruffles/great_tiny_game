@@ -1,0 +1,171 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: "Helvetica Neue";
+        color: #555;
+      }
+      .col {
+        float: left;
+        width: 48%;
+      }
+      .you {
+        width: 45px;
+        height: 45px;
+        display: inline-block;
+        border: 1px solid;
+        line-height: 45px;
+        text-align: center;
+      }
+      .name {
+        font-weight: 900;
+      }
+      .more {
+        padding-left: 1em;
+      }
+      .item {
+        margin-bottom: 1em;
+      }
+      .market_odds .odds {
+        font-size: 3em;
+      }
+      .market_odds {
+        float: left;
+        margin-right: 3em;
+      }
+      .less .opinion {
+        color: #CC1D1D;
+      }
+      .more .opinion {
+        color: #77CC1D;
+      }
+      .explain {
+        font-size: 0.7em;
+      }
+      .item {
+        margin: 0;
+      }
+      .item img, .item .you {
+        float:left;
+        margin: 0 1em 3em 0;
+      }
+      .item p {
+        margin-top: 0;
+      }
+      .item {
+        overflow: auto;
+      }
+      .wrap {
+        width: 40em;
+      }
+      .header {
+        margin-bottom: 2em;
+      }
+      .col h2 {
+        line-height: 2em;
+        margin: 0;
+        padding-left: 0.5em;
+      }
+      
+      h1, h2, h3, h4, h5 {
+        text-transform: uppercase;
+        font-weight: 100;
+      }
+      
+      .items {
+        box-shadow: inset 0px 8px 18px rgba(0,0,0,0.4);
+      }
+      ul.items {
+        margin: 0;
+        padding: 1em 1em;
+      }
+      .item {
+        font-size: 0.9em;
+        list-style-type: none;
+      }
+      
+      /* colours */
+      body {
+        background: #494948;
+        color: #E7E7E7;
+        text-shadow: 1px 1px 0px #000;
+      }
+      .col h2 {
+        background: #333;
+        border-bottom: 1px solid #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <h1>Will Picklive be acquired before 2013?</h1>
+        <h2 class="market_odds"><span class="odds">85%</span> liklihood</h2>
+        <img src="img/graph.png" />
+      </div>
+      <div class="col less">
+      
+        <h2>Less</h2>
+      
+      
+        <ul class="items">
+          <li class="item enter">
+            <div class="you">You</div>
+            <p class="about">
+              <span class="name">You</span>
+              <span class="opinion">< 85%</span>
+            </p>
+            <input type="text" class="why" />
+            <p class="explain">Enter here if you think it's less likely</p>
+          </li>
+
+          <li class="item">
+            <img src="img/profile_3.png" />
+            <p class="about">
+              <span class="name">Harry Haines</span>
+              <span class="opinion">< 83%</span>
+            </p>
+            <p class="why">Lots of competition in this space...</p>
+          </li>
+
+          <li class="item">
+            <img src="img/profile_2.png" />
+            <p class="about">
+              <span class="name">Sarah Ypres</span>
+              <span class="opinion">< 85%</span>
+            </p>
+            <p class="why">I don't like Football</p>
+          </li>
+        </ul>
+
+      </div>
+    
+      <div class="col more">
+      
+        <h2>More</h2>
+        
+        <ul class="items">
+          <li class="item enter">
+            <div class="you">You</div>
+            <p class="about">
+              <span class="name">You</span>
+              <span class="opinion">> 85%</span>
+            </p>
+            <input type="text" class="why" />
+            <p class="explain">Enter here if you think it's more likely</p>
+          </li>
+      
+          <li class="item">
+            <img src="img/profile_1.jpg" />
+            <p class="about">
+              <span class="name">Tim Ruffles</span>
+              <span class="opinion">> 85%</span>
+            </p>
+            <p class="why">We are launching an awesome new game!</p>
+          </li>
+        </ul>
+      
+      </div>
+    </div>
+  </body>
+</html>
