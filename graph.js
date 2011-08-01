@@ -1,30 +1,53 @@
 (function() {
-  var RainbowSpark;
-  RainbowSpark = function(cvs) {
-    var grad;
+  var RainbowSpark, data;
+  data = [];
+  Number.prototype.times = function(fn) {
+    var times, _results;
+    times = this;
+    _results = [];
+    while (times--) {
+      _results.push(fn());
+    }
+    return _results;
+  };
+  (10).times(function() {
+    return data.push(Math.round(Math.random() * 100));
+  });
+  RainbowSpark = function(cvs, data) {
+    var first, grad, height, lastX, lastY, perItem, width, _ref;
     this.cvs = cvs;
+    width = 300;
+    height = 150;
     if (this.ctx = this.cvs.getContext('2d')) {
       this.ctx.fillStyle = "#494948";
-      this.ctx.fillRect(0, 0, 300, 150);
+      this.ctx.fillRect(0, 0, width, height);
       this.ctx.globalCompositeOperation = "destination-out";
-      this.ctx.beginPath();
-      this.ctx.moveTo(0, 150);
-      this.ctx.lineWidth = 1.3;
-      this.ctx.quadraticCurveTo(25, 60, 120, 40);
-      this.ctx.moveTo(120, 40);
-      this.ctx.quadraticCurveTo(150, 80, 300, 80);
-      this.ctx.stroke();
+      perItem = width / (data.length - 1);
+      this.ctx.lineWidth = 1.8;
+      lastY = null;
+      first = data.shift() / 100;
+      _ref = [0, first * height], lastX = _ref[0], lastY = _ref[1];
+      data.forEach(function(item, offset) {
+        var x, y, _ref2;
+        x = perItem * (offset + 1);
+        y = (item / 100) * height;
+        this.ctx.beginPath();
+        this.ctx.moveTo(lastX, lastY);
+        this.ctx.lineTo(x, y);
+        _ref2 = [x, y], lastX = _ref2[0], lastY = _ref2[1];
+        this.ctx.stroke();
+        return console.log(x, y);
+      });
       this.ctx.globalCompositeOperation = "destination-over";
-      grad = ctx.createLinearGradient(0, 0, 0, 150);
-      grad.addColorStop(0, 'red');
-      grad.addColorStop(1 / 3, 'green');
-      grad.addColorStop(2 / 3, 'aqua');
-      grad.addColorStop(1, 'blue');
+      grad = ctx.createLinearGradient(0, 0, 0, height);
+      grad.addColorStop(0, '#6CFF3F');
+      grad.addColorStop(1 / 2, 'aqua');
+      grad.addColorStop(1, '#40ACFF');
       this.ctx.fillStyle = grad;
-      return this.ctx.fillRect(0, 0, 300, 150);
+      return this.ctx.fillRect(0, 0, width, height);
     }
   };
   document.addEventListener("DOMContentLoaded", function() {
-    return RainbowSpark(document.getElementById("graph"));
+    return RainbowSpark(document.getElementById("graph"), data);
   });
 }).call(this);

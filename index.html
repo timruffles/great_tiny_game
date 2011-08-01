@@ -95,6 +95,19 @@
         background: #333;
         border-bottom: 1px solid #888;
       }
+      .enter input {
+        width: 100%;
+      }
+      .enter .radio {
+        width: 49%;
+        display: inline;
+      }
+      .enter {
+        margin-bottom: 1em;
+      }
+      .enter .save {
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -104,21 +117,19 @@
         <h2 class="market_odds"><span class="odds">85%</span> liklihood</h2>
         <canvas id="graph" width="300" height="150" />
       </div>
+      <div class="enter">
+        <button class="radio">More Likely</button>
+        <button class="radio">Less Likely</button>
+        <input type="text" class="why" />
+        <button class="save">Save</button>
+      </div>
+      
       <div class="col less">
       
-        <h2>Less</h2>
+        <h2>Less Likely</h2>
       
       
         <ul class="items">
-          <li class="item enter">
-            <div class="you">You</div>
-            <p class="about">
-              <span class="name">You</span>
-              <span class="opinion">< 85%</span>
-            </p>
-            <input type="text" class="why" />
-            <p class="explain">Enter here if you think it's less likely</p>
-          </li>
 
           <li class="item">
             <img src="img/profile_3.png" />
@@ -143,19 +154,10 @@
     
       <div class="col more">
       
-        <h2>More</h2>
+        <h2>More Likely</h2>
         
         <ul class="items">
-          <li class="item enter">
-            <div class="you">You</div>
-            <p class="about">
-              <span class="name">You</span>
-              <span class="opinion">> 85%</span>
-            </p>
-            <input type="text" class="why" />
-            <p class="explain">Enter here if you think it's more likely</p>
-          </li>
-      
+       
           <li class="item">
             <img src="img/profile_1.jpg" />
             <p class="about">

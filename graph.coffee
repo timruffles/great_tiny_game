@@ -1,25 +1,39 @@
 
-RainbowSpark = (@cvs) ->
+data = []
+Number::times = (fn) -> times = this; fn() while times--
+10.times -> data.push Math.round(Math.random() * 100)
+
+RainbowSpark = (@cvs,data) ->
+  width = 300
+  height = 150
   if @ctx = @cvs.getContext('2d')
     @ctx.fillStyle = "#494948"
-    @ctx.fillRect(0,0,300,150)
+    @ctx.fillRect(0,0,width,height)
+    
     @ctx.globalCompositeOperation = "destination-out" # remove line
-    @ctx.beginPath()
-    @ctx.moveTo 0,150
-    @ctx.lineWidth = 1.3
-    @ctx.quadraticCurveTo(25,60,120,40)
-    @ctx.moveTo 120,40
-    @ctx.quadraticCurveTo(150,80,300,80)
-    @ctx.stroke()
+    perItem = width / (data.length - 1)
+    @ctx.lineWidth = 1.8
+    lastY = null
+    first = (data.shift() / 100)
+    [lastX,lastY] = [0, first * height]
+    data.forEach (item,offset) ->
+      x = perItem * (offset + 1)
+      y = (item / 100) * height
+      @ctx.beginPath()
+      @ctx.moveTo lastX, lastY
+      @ctx.lineTo x, y
+      [lastX,lastY] = [x, y]
+      @ctx.stroke()
+      console.log x, y
+    
     
     @ctx.globalCompositeOperation = "destination-over" # draw background
-    grad = ctx.createLinearGradient(0,0,0,150)
-    grad.addColorStop(0, 'red')
-    grad.addColorStop(1 / 3, 'green')
-    grad.addColorStop(2 / 3, 'aqua')
-    grad.addColorStop(1, 'blue')
+    grad = ctx.createLinearGradient(0,0,0,height)
+    grad.addColorStop(0, '#6CFF3F')
+    grad.addColorStop(1 / 2 , 'aqua')
+    grad.addColorStop(1, '#40ACFF')
     @ctx.fillStyle=grad
-    @ctx.fillRect(0,0,300,150)
+    @ctx.fillRect(0,0,width,height)
     
 document.addEventListener "DOMContentLoaded", ->
-  RainbowSpark document.getElementById("graph")
+  RainbowSpark document.getElementById("graph"), data
