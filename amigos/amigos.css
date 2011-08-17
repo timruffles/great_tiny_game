@@ -1,0 +1,20 @@
+#threats {
+  position: relative;
+  height: 600px; }
+  #threats .threat {
+    -webkit-transition: top 8s linear;
+    position: absolute;
+    top: 0%;
+    border-radius: 0.4em;
+    background: red;
+    height: 3em;
+    width: 2em;
+    line-height: 3em;
+    text-align: center;
+    color: white;
+    text-shadow: 1px 1px 0px black; }
+  #threats li.threat {
+    list-style-type: none; }
+
+ul#threats {
+  list-style: none; }

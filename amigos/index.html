@@ -1,0 +1,130 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/base/base-min.css">
+    <link rel="stylesheet" href="amigos.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="underscore.js" type="text/javascript" charset="utf-8"></script>
+    <script src="backbone.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      var colours = ["red","green","blue"],
+          game = {
+            red: 0, green: 0, blue: 0, life: 10,
+            calculateAttack: function(attack) {
+              var str= Number($(attack).html()),
+                  colour = $(attack).data("colour"),
+                  result = "";
+              if(game[colour] > str) {
+                result = "You BEAT that " + colour + " bastard!";
+                if(game.comboColour == colour) {
+                  this.combo ++;
+                } else {
+                  this.comboColour = colour
+                  this.combo = 0;
+                }
+              } else {
+                result = "You got BEAT by that " + colour + " bastard!"
+                game.life --;
+                drawLife();
+                this.comboColour = "";
+                this.combo = 0;
+              }
+              results.html(result)
+              $(attack).remove()
+              updateCombo()
+            },
+            comboColour: "",
+            combo: 0
+          },
+          results;
+      function updateCombo() {
+        $("#combo").css({"background-color":game.comboColour}).html(game.combo);
+      }
+      $(function() {
+        results =  $(".results");
+        setInterval(function() {
+          if($("#threats .threat").length < 5) {
+            var threat = $("<div class='threat'></div>").appendTo($("#threats"));
+            setTimeout(function() {
+              var col = colours[Math.round(Math.random() * (colours.length - 1))];
+              threat.css({
+                top:"100%",
+                background: col
+              }).html(Math.round(Math.random() * 10)).data({colour:col});
+            },0)
+            setTimeout(function() {
+              if(threat)
+            },8500)
+          }
+        },2000)
+        $("#threats").delegate(".threat","click",function() {
+          game.calculateAttack(this)
+        })
+        function updateStatus() {
+          var colour = $(this).attr("id"),
+              val = $(this).val();
+          game[colour] = val;
+          $(".selector").not(this).each(function() {
+            if($(this).val() != val) return;
+            game[$(this).attr("id")] = 1;
+            $(this).find("option").each(function() {
+              $(this).attr("selected",Number($(this).text()) == 1)
+            })
+          })
+        }
+        $(".selector").change(updateStatus).each(updateStatus);
+        drawLife()
+      })
+      function drawLife() {
+        var life = game.life, el = $("#life");
+        if(life == 0) {
+          alert("WOE! THE AMIGOS HAVE FAILED!")
+          $("body").fadeOut()
+        }
+        el.empty();
+        while(life--) {
+          el.append('<img src="heart.png" />');
+        }
+      }
+    </script>
+    <style>
+      #red {
+        background: red;
+      }
+      #green {
+        background: green;
+      }
+      #blue {
+        background: blue;
+      }
+      body, .selector {
+        font-size: 3em;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="threats">
+    </ul>
+    <div>
+      Combo: <span id="combo"></span>
+    </div>
+    <div class="results">
+      You're under attack!
+    </div>
+    <div id="life"></div>
+    <select id="red" class="selector">
+      <option selected="true">1</option>
+      <option>3</option>
+      <option>7</option>
+    </select>
+    <select id="green" class="selector">
+      <option>1</option>
+      <option selected="true">3</option>
+      <option>7</option>
+    </select>
+    <select id="blue" class="selector">
+      <option>1</option>
+      <option selected="true">3</option>
+      <option>7</option>
+    </select>
+  </body>
+</html>

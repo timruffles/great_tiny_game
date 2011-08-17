@@ -1,0 +1,31 @@
+<script src="mustache.js" type="text/javascript" charset="utf-8"></script>
+<script src="underscore.js" type="text/javascript" charset="utf-8"></script>
+<script src="backbone.js" type="text/javascript" charset="utf-8"></script>
+<script src="target.js" type="text/javascript" charset="utf-8"></script>
+<style>
+  #threats {
+    width: 400px;
+    height: 200px;
+    border: 1px solid #000;
+    position: relative;
+  }
+  #target {
+    border: 4px solid yellow;
+    height: 100%;
+    width: 100px;
+    position: absolute;
+  }
+  .enemy {
+    position: absolute;
+    height: 100%;
+    width: 50px;
+    background: red;
+  }
+  body {
+    -webkit-user-select: none;
+  }
+</style>
+<div id="threats">
+  <div id="target"></div>
+</div>
+<button id="doom">DOOM cannon</button>
