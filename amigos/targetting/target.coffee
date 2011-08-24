@@ -83,8 +83,9 @@ Enemy = Model.extend
   initialize: ->
     @pub.bind "tick", (diff) =>
       @set travelled: @get("travelled") + @get("speed") * diff
-      if @get("travelled") > 100
+      if @get("travelled") > 350 && !@attacked
         @trigger "attack", this
+        @attacked = true
   hit: ->
     @trigger "died", this
 Enemy.Collection = Collection.extend
@@ -151,18 +152,31 @@ Level = Model.extend
     @pub.bind "tick", @tick
     @spawnTime = 6000
     @spawnLimit = 3
+    @enemies.bind "attack", =>
+      @set lives: (@get("lives") - 1)
     @enemies.bind "died", =>
       unless @spawnTime <= 0
         @spawnTime -= 2000
         @spawnLimit += 1
+    @bind "change:lives", (level,lives) => 
+      if lives == 0
+        @trigger "lost"
   tick: (diff,gameTime) ->
     if gameTime > @get("spawnNext") && @enemies.length < @spawnLimit
       @enemies.add new Enemy
-        speed: 20 + 50.sample()
+        speed: 50 + 50.sample()
         travelled: 0
         name: createName()
       @set spawnNext: gameTime + 1000 + @spawnTime.sample()
       
+Lives = View.extend
+  className: "lives"
+  initialize: ->
+    _.bindAll this, "render"
+    @model.bind "change:lives", @render
+  render: ->
+    @el.innerHTML = @model.get("lives")
+    
 DoomButton = View.extend
   initialize: ({@target,@enemiesView}) ->
     _.bindAll this, "fire"
@@ -192,13 +206,25 @@ onDom ->
   # model
   enemies = new Enemy.Collection()
   
-  level = new Level {},
+  level = new Level {lives: 10},
     enemies: enemies
-  
+    
+  level.bind "lost", ->
+    alert("You lose")
+    window.location.reload()
+    
   #view
   enemiesView = new EnemiesView
     collection: enemies
     el: doc.byId "threats"
+    
+  lives = new Lives
+    model: level
+    collection: enemies
+    
+  lives.render()
+
+  doc.body.appendChild lives.el
   
   target = doc.byId "target"
   track = doc.byId "threats"

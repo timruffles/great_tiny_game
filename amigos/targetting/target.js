@@ -1,5 +1,5 @@
 (function() {
-  var $, CMDS, Collection, DoomButton, EnemiesView, Enemy, EnemyView, Level, Model, Target, View, animFrame, animate, createName, doc, onDom, p, prefixes, types;
+  var $, CMDS, Collection, DoomButton, EnemiesView, Enemy, EnemyView, Level, Lives, Model, Target, View, animFrame, animate, createName, doc, onDom, p, prefixes, types;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   doc = document;
   $ = doc.querySelectorAll;
@@ -125,8 +125,9 @@
         this.set({
           travelled: this.get("travelled") + this.get("speed") * diff
         });
-        if (this.get("travelled") > 100) {
-          return this.trigger("attack", this);
+        if (this.get("travelled") > 350 && !this.attacked) {
+          this.trigger("attack", this);
+          return this.attacked = true;
         }
       }, this));
     },
@@ -217,17 +218,27 @@
       this.pub.bind("tick", this.tick);
       this.spawnTime = 6000;
       this.spawnLimit = 3;
-      return this.enemies.bind("died", __bind(function() {
+      this.enemies.bind("attack", __bind(function() {
+        return this.set({
+          lives: this.get("lives") - 1
+        });
+      }, this));
+      this.enemies.bind("died", __bind(function() {
         if (!(this.spawnTime <= 0)) {
           this.spawnTime -= 2000;
           return this.spawnLimit += 1;
+        }
+      }, this));
+      return this.bind("change:lives", __bind(function(level, lives) {
+        if (lives === 0) {
+          return this.trigger("lost");
         }
       }, this));
     },
     tick: function(diff, gameTime) {
       if (gameTime > this.get("spawnNext") && this.enemies.length < this.spawnLimit) {
         this.enemies.add(new Enemy({
-          speed: 20 + (50).sample(),
+          speed: 50 + (50).sample(),
           travelled: 0,
           name: createName()
         }));
@@ -235,6 +246,16 @@
           spawnNext: gameTime + 1000 + this.spawnTime.sample()
         });
       }
+    }
+  });
+  Lives = View.extend({
+    className: "lives",
+    initialize: function() {
+      _.bindAll(this, "render");
+      return this.model.bind("change:lives", this.render);
+    },
+    render: function() {
+      return this.el.innerHTML = this.model.get("lives");
     }
   });
   DoomButton = View.extend({
@@ -257,7 +278,7 @@
     }
   });
   onDom(function() {
-    var animation, button, enemies, enemiesView, gameTime, lastTime, level, maxDiff, modelEvents, target, ticker, track, update, viewEvents;
+    var animation, button, enemies, enemiesView, gameTime, lastTime, level, lives, maxDiff, modelEvents, target, ticker, track, update, viewEvents;
     update = function(diff, time) {
       return spawn();
     };
@@ -266,13 +287,25 @@
     View.prototype.pub = viewEvents;
     Model.prototype.pub = Collection.prototype.pub = modelEvents;
     enemies = new Enemy.Collection();
-    level = new Level({}, {
+    level = new Level({
+      lives: 10
+    }, {
       enemies: enemies
+    });
+    level.bind("lost", function() {
+      alert("You lose");
+      return window.location.reload();
     });
     enemiesView = new EnemiesView({
       collection: enemies,
       el: doc.byId("threats")
     });
+    lives = new Lives({
+      model: level,
+      collection: enemies
+    });
+    lives.render();
+    doc.body.appendChild(lives.el);
     target = doc.byId("target");
     track = doc.byId("threats");
     Target(target, track);
