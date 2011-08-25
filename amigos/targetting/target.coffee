@@ -5,6 +5,8 @@ Element::on = Element::addEventListener
 Element::ignore = Element::removeEventListener
 Element::$ = Element::querySelectorAll
 
+toHtml = Mustache.to_html
+
 String::toFloat = -> if this + "" == "" then 0 else parseFloat this
 String::toInt = -> if this + "" == "" then 0 else parseInt this
 
@@ -16,17 +18,42 @@ View = (opts)->
   @construct(opts)
   @initialize(opts)
   p "called #{@el}"
+  
+eventSplitter = /(\S+)(?:\s+(\S+))?/
+
 View:: =
   construct: ({@collection,@model,@el}) ->
     @make() unless @el
+    @initialize(arguments[0])
+    @delegate()
   initialize: (opts) ->
   make: ->
     @el = doc.createElement "div"
     @el.classList.add @className if @className
   render: ->
-    @el.innerHTML = Mustache.to_html(this.template,this.transform())
+    @el.innerHTML = toHtml(this.template,this.transform())
   transform: ->
     @model.toJSON()
+  delegate: ->
+    return unless @events
+    for eventSetup, handler of @events
+      do (eventSetup, handler) =>
+        handler = @[handler]
+        if match = eventSplitter.exec eventSetup
+          [whole, selector, event] = match
+        unless event
+          event = selector
+        if selector
+          @el.on event, (evt) ->
+            tester = doc.createElement("div")
+            tester.appendChild(evt.target.cloneNode(false))
+            if tester.$(selector).length > 0
+              handler(evt)
+        else
+          @el.on event, handler
+              
+            
+    
 View.extend = Backbone.Collection.extend
 Collection = Backbone.Collection
 
@@ -192,62 +219,5 @@ DoomButton = View.extend
         enemy.hit()
     evt.preventDefault()
   
-onDom ->
-
-  update = (diff, time) ->
-    spawn()
-    
-  modelEvents = _.extend {}, Backbone.Events
-  viewEvents = _.extend {}, Backbone.Events
-  
-  View::pub = viewEvents
-  Model::pub = Collection::pub = modelEvents
-  
-  # model
-  enemies = new Enemy.Collection()
-  
-  level = new Level {lives: 10},
-    enemies: enemies
-    
-  level.bind "lost", ->
-    alert("You lose")
-    window.location.reload()
-    
-  #view
-  enemiesView = new EnemiesView
-    collection: enemies
-    el: doc.byId "threats"
-    
-  lives = new Lives
-    model: level
-    collection: enemies
-    
-  lives.render()
-
-  doc.body.appendChild lives.el
-  
-  target = doc.byId "target"
-  track = doc.byId "threats"
-    
-  Target(target,track)
-  
-  button = new DoomButton
-    target: target
-    enemiesView: enemiesView
-    collection: enemies
-    el: doc.byId "doom"
-    
-  lastTime = new Date - 0
-  gameTime = 0
-  maxDiff = 1000
-  ticker = (time) ->
-    diff = (time - lastTime)
-    gameTime += Math.min diff, maxDiff
-    diff /= 1000
-    modelEvents.trigger "tick", diff, gameTime
-    viewEvents.trigger "tick", diff, gameTime
-    lastTime = time
-   animation = animate ticker
-
 
   
