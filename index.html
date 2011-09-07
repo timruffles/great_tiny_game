@@ -1,8 +1,10 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.1.7/underscore-min.js" type="text/javascript" charset="utf-8"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.1/backbone-min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://raw.github.com/janl/mustache.js/master/mustache.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://raw.github.com/timruffles/great_tiny_game/master/amigos/targetting/target.js" type="text/javascript" charset="utf-8"></script>
-<style>
+<script "https://raw.github.com/timruffles/great_tiny_game/master/amigos/target.js" type="text/javascript" charset="utf-8"></script> 
+<script "https://raw.github.com/timruffles/great_tiny_game/master/amigos/party.js" type="text/javascript" charset="utf-8"></script> 
+<script "https://raw.github.com/timruffles/great_tiny_game/master/amigos/prototype_boot.js" type="text/javascript" charset="utf-8"></script> 
+<style> 
   #threats {
     width: 400px;
     height: 200px;
@@ -24,8 +26,70 @@
   body {
     -webkit-user-select: none;
   }
-</style>
-<div id="threats">
-  <div id="target"></div>
+</style> 
+<style type="text/css" media="screen"> 
+  .hidden {
+    display: none;
+  }
+  .chooser {
+    background: #eee;
+    width: 40%;
+    overflow: auto;
+  }
+  .chooser .item {
+    display: block;
+    float: left;
+    width: 100px;
+    height: 100px;
+  }
+  .chooser .item:hover {
+    border: 1px solid yellow;
+  }
+</style> 
+<style type="text/css" media="screen"> 
+  .member {
+    float: left;
+    width: 200px;
+  }
+  .enemy.moral {
+    background-color: #CB5AFF;
+  }
+  .enemy.political {
+    background-color: #59AFFF;
+  }
+  .enemy.financial {
+    background-color: #FFEC59;
+  }
+  .enemy.physical {
+    background-color: red;
+  }
+  .item.moral {
+    background: #CB5AFF;
+  }
+  .item.political {
+    background: #59AFFF;
+  }
+  .item.financial {
+    background: #FFEC59;
+  }
+  .item.physical {
+    background: red;
+  }
+  .active_item.moral {
+    color:#CB5AFF;
+  }
+  .active_item.political {
+    color:#59AFFF;
+  }
+  .active_item.financial {
+    color:#FFEC59;
+  }
+  .active_item.physical {
+    color:red;
+  }
+</style> 
+<div id="threats"> 
+  <div id="target"></div> 
+</div> 
+<div id="members"> 
 </div>
-<button id="doom">DOOM cannon</button>
