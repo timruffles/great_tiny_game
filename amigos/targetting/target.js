@@ -167,7 +167,7 @@ Enemy = Model.extend({
       if (this.get("travelled") > 350 && !this.attacked) {
         this.trigger("attack", this);
         this.attacked = true;
-        return this.trigger("died", this);
+        return this.trigger("left", this);
       }
     }, this));
   },
@@ -181,7 +181,10 @@ Enemy = Model.extend({
 });
 Enemy.Collection = Collection.extend({
   initialize: function() {
-    return this.bind("died", __bind(function(enemy) {
+    this.bind("died", __bind(function(enemy) {
+      return this.remove(enemy);
+    }, this));
+    return this.bind("left", __bind(function(enemy) {
       return this.remove(enemy);
     }, this));
   },
@@ -190,11 +193,12 @@ Enemy.Collection = Collection.extend({
 EnemyView = View.extend({
   className: "enemy",
   initialize: function() {
-    _.bindAll(this, "render", "die");
+    _.bindAll(this, "render", "remove");
     this.needsDraw = true;
     this.el.style.right = 0;
     this.pub.bind("tick", this.render);
-    return this.model.bind("died", this.die);
+    this.model.bind("died", this.remove);
+    return this.model.bind("left", this.remove);
   },
   template: "<span class=\"name\">{{name}}</span>",
   render: function() {
@@ -206,7 +210,7 @@ EnemyView = View.extend({
     this.el.className = "enemy";
     return this.el.classList.add(this.model.get("type"));
   },
-  die: function() {
+  remove: function() {
     if (this.el.parentNode) {
       return this.el.parentNode.removeChild(this.el);
     }
@@ -263,6 +267,9 @@ Level = Model.extend({
     this.pub.bind("tick", this.tick);
     this.spawnTime = 6000;
     this.spawnLimit = 3;
+    this.set({
+      score: 0
+    });
     this.enemies.bind("attack", __bind(function() {
       return this.set({
         lives: this.get("lives") - 1
@@ -271,8 +278,11 @@ Level = Model.extend({
     this.enemies.bind("died", __bind(function() {
       if (!(this.spawnTime <= 0)) {
         this.spawnTime -= 2000;
-        return this.spawnLimit += 1;
+        this.spawnLimit += 1;
       }
+      return this.set({
+        score: this.get("score") + 500
+      });
     }, this));
     return this.bind("change:lives", __bind(function(level, lives) {
       if (lives === 0) {
@@ -298,9 +308,7 @@ Lives = View.extend({
   className: "lives",
   initialize: function() {
     _.bindAll(this, "render");
-    return this.model.bind("change:lives", this.render);
+    return this.model.bind("change", this.render);
   },
-  render: function() {
-    return this.el.innerHTML = this.model.get("lives");
-  }
+  template: "<span class=\"lives\">Lives: {{lives}}</span>\n<span class=\"score\">Score: {{score}}</span>"
 });

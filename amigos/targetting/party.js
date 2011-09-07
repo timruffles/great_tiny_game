@@ -28,7 +28,7 @@ Item = Model.extend({
 });
 MemberView = View.extend({
   className: "member",
-  template: "<div>\n  <img class=\"portrait\" src=\"img/{{name}}.png\" />\n  {{name}}\n</div>\n{{#item}}\n  <span class=\"active_item {{type}}\">\n    {{name}}\n  </span>\n{{/item}}\n<span class=\"choose\">\n    Edit\n</span>",
+  template: "<div>\n  <img class=\"portrait\" src=\"img/{{name}}.png\" />\n  {{name}}\n</div>\n{{#item}}\n  <span class=\"active_item {{type}}\">\n    {{name}}\n  </span>\n{{/item}}\n<button class=\"choose\">\n  Change item\n</button>",
   events: {
     ".choose click": "change",
     ".portrait click": "activate"

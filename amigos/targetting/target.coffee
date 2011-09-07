@@ -115,7 +115,7 @@ Enemy = Model.extend
       if @get("travelled") > 350 && !@attacked
         @trigger "attack", this
         @attacked = true
-        @trigger "died", this
+        @trigger "left", this
   hit: (item) ->
     if item.get("type") == @get("type")
       @trigger "died", this
@@ -125,16 +125,18 @@ Enemy.Collection = Collection.extend
   initialize: ->
     @bind "died", (enemy) =>
       @remove enemy
+    @bind "left", (enemy) => @remove enemy
   model: Enemy
 
 EnemyView = View.extend
   className: "enemy"
   initialize: ->
-    _.bindAll this, "render", "die"
+    _.bindAll this, "render", "remove"
     @needsDraw = true
     @el.style.right = 0
     @pub.bind "tick", @render
-    @model.bind "died", @die
+    @model.bind "died", @remove
+    @model.bind "left", @remove
   template: """
     <span class="name">{{name}}</span>
   """
@@ -145,7 +147,7 @@ EnemyView = View.extend
     @el.style.right = @model.get("travelled")
     @el.className = "enemy"
     @el.classList.add @model.get("type")
-  die: ->
+  remove: ->
     if @el.parentNode
       @el.parentNode.removeChild(@el)
 EnemiesView = View.extend
@@ -186,12 +188,14 @@ Level = Model.extend
     @pub.bind "tick", @tick
     @spawnTime = 6000
     @spawnLimit = 3
+    @set score: 0
     @enemies.bind "attack", =>
       @set lives: (@get("lives") - 1)
     @enemies.bind "died", =>
       unless @spawnTime <= 0
         @spawnTime -= 2000
         @spawnLimit += 1
+      @set score: @get("score") + 500
     @bind "change:lives", (level,lives) => 
       if lives == 0
         @trigger "lost"
@@ -208,8 +212,11 @@ Lives = View.extend
   className: "lives"
   initialize: ->
     _.bindAll this, "render"
-    @model.bind "change:lives", @render
-  render: ->
-    @el.innerHTML = @model.get("lives")
+    @model.bind "change", @render
+  template:
+    """
+      <span class="lives">Lives: {{lives}}</span>
+      <span class="score">Score: {{score}}</span>
+    """
     
   

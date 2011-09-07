@@ -24,9 +24,9 @@ MemberView = View.extend
         {{name}}
       </span>
     {{/item}}
-    <span class="choose">
-        Edit
-    </span>
+    <button class="choose">
+      Change item
+    </button>
   """
   events: 
     ".choose click": "change"

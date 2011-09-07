@@ -13,7 +13,7 @@ onDom ->
     enemies: enemies
     
   level.bind "lost", ->
-    alert("You lose")
+    alert("The day is lost!")
     window.location.reload()
     
   #view

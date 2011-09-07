@@ -12,7 +12,7 @@ onDom(function() {
     enemies: enemies
   });
   level.bind("lost", function() {
-    alert("You lose");
+    alert("The day is lost!");
     return window.location.reload();
   });
   enemiesView = new EnemiesView({
