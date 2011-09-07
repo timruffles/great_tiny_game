@@ -1,6 +1,39 @@
-var items, models, names, views;
-names = ["Tom", "Dick", "Harry", "Gonzales"];
-items = ["Sword-stick", "Pistol", "Stiletto", "Bill of exchange"];
+var members, models, views;
+members = [
+  {
+    name: "Garcia",
+    portrait: "garcia",
+    items: new (Collection.extend({
+      model: Item
+    }))([
+      {
+        id: 1,
+        name: "Pistol",
+        color: "red"
+      }, {
+        id: 2,
+        name: "Sword Stick",
+        color: "blue"
+      }
+    ])
+  }, {
+    name: "Artez",
+    portrait: "artez",
+    items: new (Collection.extend({
+      model: Item
+    }))([
+      {
+        id: 1,
+        name: "Shield-Latern",
+        color: "red"
+      }, {
+        id: 2,
+        name: "Blunderbuss",
+        color: "blue"
+      }
+    ])
+  }
+];
 views = {
   members: [],
   itemChooser: null
@@ -11,22 +44,12 @@ models = {
   }))
 };
 views.itemChooser = new ItemChooser({});
-(4).times(function() {
-  var member;
-  models.members.add(member = new Member({
-    name: names.sample()
-  }, {
-    items: new (Collection.extend({
-      model: Item
-    }))([
-      {
-        id: 1,
-        name: items.sample()
-      }, {
-        id: 2,
-        name: items.sample()
-      }
-    ])
+members.forEach(function(memberData) {
+  var items, member;
+  items = memberData.items;
+  delete memberData.items;
+  models.members.add(member = new Member(memberData, {
+    items: items
   }));
   return views.members.push(new MemberView({
     model: member,

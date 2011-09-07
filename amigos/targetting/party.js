@@ -28,10 +28,10 @@ Item = Model.extend({
 });
 MemberView = View.extend({
   className: "member",
-  template: "<span class=\"portrait\">\n  {{name}}\n</span>\n<span class=\"item\">\n  {{item}}\n</span>",
+  template: "<div class=\"portrait\">\n  <img src=\"img/{{name}}.png\" />\n  {{name}}\n</div>\n{{#item}}\n  <span class=\"item\" style=\"color:{{color}}\">\n    {{name}}\n  </span>\n{{/item}}\n<span class=\"choose\">\n    Edit\n</span>",
   events: {
-    ".portrait click": "change",
-    ".action click": "trigger"
+    ".choose click": "change",
+    ".portrait click": "trigger"
   },
   initialize: function(_arg) {
     this.itemChooser = _arg.itemChooser;
@@ -42,7 +42,7 @@ MemberView = View.extend({
   render: function() {
     var _ref;
     return this.el.innerHTML = toHtml(this.template, _.extend(this.model.toJSON(), {
-      item: (_ref = this.model.get("active")) != null ? _ref.get("name") : void 0
+      item: (_ref = this.model.get("active")) != null ? _ref.toJSON() : void 0
     }));
   },
   change: function() {
@@ -64,7 +64,7 @@ idEvent = function(fn) {
 };
 ItemChooser = View.extend({
   className: "chooser",
-  template: "{{#items}}\n  <li data-id=\"{{id}}\" class=\"item\">{{name}}</option>\n{{/items}}",
+  template: "{{#items}}\n  <li data-id=\"{{id}}\" class=\"item\" style=\"border: 2px solid {{color}}\">{{name}}</option>\n{{/items}}",
   initialize: function() {
     _.bindAll(this, "select");
     return this.toggle();

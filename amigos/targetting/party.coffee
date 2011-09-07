@@ -15,22 +15,28 @@ Item = Model.extend
 MemberView = View.extend
   className: "member"
   template: """
-    <span class="portrait">
+    <div class="portrait">
+      <img src="img/{{name}}.png" />
       {{name}}
-    </span>
-    <span class="item">
-      {{item}}
+    </div>
+    {{#item}}
+      <span class="item" style="color:{{color}}">
+        {{name}}
+      </span>
+    {{/item}}
+    <span class="choose">
+        Edit
     </span>
   """
   events: 
-    ".portrait click": "change"
-    ".action click": "trigger"
+    ".choose click": "change"
+    ".portrait click": "trigger"
   initialize: ({@itemChooser}) ->
     _.bindAll this, "render","change","trigger"
     @model.bind "change", @render
     @render()
   render: ->
-    @el.innerHTML = toHtml(@template,_.extend @model.toJSON(), item: @model.get("active")?.get("name"))
+    @el.innerHTML = toHtml(@template,_.extend @model.toJSON(), item: @model.get("active")?.toJSON())
   change: ->
     p "change"
     @itemChooser.model = @model
@@ -48,7 +54,7 @@ ItemChooser = View.extend
   className: "chooser"
   template: """
     {{#items}}
-      <li data-id="{{id}}" class="item">{{name}}</option>
+      <li data-id="{{id}}" class="item" style="border: 2px solid {{color}}">{{name}}</option>
     {{/items}}
   """
   initialize: ->
