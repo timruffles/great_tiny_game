@@ -1,4 +1,4 @@
-var $, CMDS, Collection, EnemiesView, Enemy, EnemyView, Level, Lives, Model, Target, View, animFrame, animate, createName, doc, eventSplitter, onDom, p, prefixes, toHtml, types;
+var $, CMDS, Collection, EnemiesView, Enemy, EnemyView, Level, Lives, Model, TYPES, Target, View, animFrame, animate, createName, doc, eventSplitter, onDom, p, prefixes, toHtml, types;
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 doc = document;
 $ = doc.querySelectorAll;
@@ -30,6 +30,7 @@ View = function(opts) {
   this.initialize(opts);
   return p("called " + this.el);
 };
+TYPES = ["physical", "financial", "political", "moral"];
 eventSplitter = /(\S+)(?:\s+(\S+))?/;
 View.prototype = {
   construct: function(_arg) {
@@ -165,12 +166,17 @@ Enemy = Model.extend({
       });
       if (this.get("travelled") > 350 && !this.attacked) {
         this.trigger("attack", this);
-        return this.attacked = true;
+        this.attacked = true;
+        return this.trigger("died", this);
       }
     }, this));
   },
-  hit: function() {
-    return this.trigger("died", this);
+  hit: function(item) {
+    if (item.get("type") === this.get("type")) {
+      return this.trigger("died", this);
+    } else {
+      return this.trigger("deflect", this);
+    }
   }
 });
 Enemy.Collection = Collection.extend({
@@ -196,10 +202,9 @@ EnemyView = View.extend({
       View.prototype.render.call(this);
       this.needsDraw = false;
     }
-    return this.el.style.right = this.model.get("travelled");
-  },
-  hit: function() {
-    return this.model.hit();
+    this.el.style.right = this.model.get("travelled");
+    this.el.className = "enemy";
+    return this.el.classList.add(this.model.get("type"));
   },
   die: function() {
     if (this.el.parentNode) {
@@ -280,7 +285,8 @@ Level = Model.extend({
       this.enemies.add(new Enemy({
         speed: 50 + (50).sample(),
         travelled: 0,
-        name: createName()
+        name: createName(),
+        type: TYPES.sample()
       }));
       return this.set({
         spawnNext: gameTime + 1000 + this.spawnTime.sample()

@@ -20,7 +20,7 @@ MemberView = View.extend
       {{name}}
     </div>
     {{#item}}
-      <span class="item" style="color:{{color}}">
+      <span class="active_item {{type}}">
         {{name}}
       </span>
     {{/item}}
@@ -59,7 +59,7 @@ ItemChooser = View.extend
   className: "chooser"
   template: """
     {{#items}}
-      <li data-id="{{id}}" class="item" style="border: 2px solid {{color}}">{{name}}</option>
+      <li data-id="{{id}}" class="item {{type}}">{{name}}</option>
     {{/items}}
   """
   initialize: ->

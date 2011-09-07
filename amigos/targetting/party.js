@@ -28,7 +28,7 @@ Item = Model.extend({
 });
 MemberView = View.extend({
   className: "member",
-  template: "<div>\n  <img class=\"portrait\" src=\"img/{{name}}.png\" />\n  {{name}}\n</div>\n{{#item}}\n  <span class=\"item\" style=\"color:{{color}}\">\n    {{name}}\n  </span>\n{{/item}}\n<span class=\"choose\">\n    Edit\n</span>",
+  template: "<div>\n  <img class=\"portrait\" src=\"img/{{name}}.png\" />\n  {{name}}\n</div>\n{{#item}}\n  <span class=\"active_item {{type}}\">\n    {{name}}\n  </span>\n{{/item}}\n<span class=\"choose\">\n    Edit\n</span>",
   events: {
     ".choose click": "change",
     ".portrait click": "activate"
@@ -66,7 +66,7 @@ idEvent = function(fn) {
 };
 ItemChooser = View.extend({
   className: "chooser",
-  template: "{{#items}}\n  <li data-id=\"{{id}}\" class=\"item\" style=\"border: 2px solid {{color}}\">{{name}}</option>\n{{/items}}",
+  template: "{{#items}}\n  <li data-id=\"{{id}}\" class=\"item {{type}}\">{{name}}</option>\n{{/items}}",
   initialize: function() {
     _.bindAll(this, "select");
     return this.toggle();

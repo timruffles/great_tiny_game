@@ -19,6 +19,7 @@ View = (opts)->
   @initialize(opts)
   p "called #{@el}"
   
+TYPES = ["physical","financial","political","moral"]
 eventSplitter = /(\S+)(?:\s+(\S+))?/
 
 View:: =
@@ -114,8 +115,12 @@ Enemy = Model.extend
       if @get("travelled") > 350 && !@attacked
         @trigger "attack", this
         @attacked = true
-  hit: ->
-    @trigger "died", this
+        @trigger "died", this
+  hit: (item) ->
+    if item.get("type") == @get("type")
+      @trigger "died", this
+    else
+      @trigger "deflect", this
 Enemy.Collection = Collection.extend
   initialize: ->
     @bind "died", (enemy) =>
@@ -138,8 +143,8 @@ EnemyView = View.extend
       View::render.call(this)
       @needsDraw = false
     @el.style.right = @model.get("travelled")
-  hit: ->
-    @model.hit()
+    @el.className = "enemy"
+    @el.classList.add @model.get("type")
   die: ->
     if @el.parentNode
       @el.parentNode.removeChild(@el)
@@ -196,6 +201,7 @@ Level = Model.extend
         speed: 50 + 50.sample()
         travelled: 0
         name: createName()
+        type: TYPES.sample()
       @set spawnNext: gameTime + 1000 + @spawnTime.sample()
       
 Lives = View.extend

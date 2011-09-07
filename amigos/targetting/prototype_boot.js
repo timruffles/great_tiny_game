@@ -1,9 +1,6 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 onDom(function() {
-  var animation, enemies, enemiesView, gameTime, lastTime, level, lives, maxDiff, members, mems, modelEvents, models, resolveActivation, target, ticker, track, update, view, viewEvents, views, _i, _len, _ref;
-  update = function(diff, time) {
-    return spawn();
-  };
+  var animation, enemies, enemiesView, gameTime, lastTime, level, lives, maxDiff, members, mems, modelEvents, models, resolveActivation, target, ticker, track, view, viewEvents, views, _i, _len, _ref;
   modelEvents = _.extend({}, Backbone.Events);
   viewEvents = _.extend({}, Backbone.Events);
   View.prototype.pub = viewEvents;
@@ -53,12 +50,12 @@ onDom(function() {
       }))([
         {
           id: 1,
-          name: "Pistol",
-          color: "red"
+          name: "Tongue of the Demagogue",
+          type: "political"
         }, {
           id: 2,
-          name: "Sword Stick",
-          color: "blue"
+          name: "Chastity Belt",
+          type: "moral"
         }
       ])
     }, {
@@ -69,12 +66,12 @@ onDom(function() {
       }))([
         {
           id: 1,
-          name: "Shield-Latern",
-          color: "red"
+          name: "Sword-stick",
+          type: "physical"
         }, {
           id: 2,
-          name: "Blunderbuss",
-          color: "blue"
+          name: "Louis XV's Letter of Marque",
+          type: "financial"
         }
       ])
     }
@@ -115,7 +112,7 @@ onDom(function() {
       var rect, _ref2, _ref3;
       rect = enemiesView.getView(enemy).el.getBoundingClientRect();
       if (((targetRect.left < (_ref2 = rect.left) && _ref2 < targetRect.right)) || ((targetRect.left < (_ref3 = rect.right) && _ref3 < targetRect.right))) {
-        return enemy.hit();
+        return enemy.hit(item);
       }
     }, this));
   };

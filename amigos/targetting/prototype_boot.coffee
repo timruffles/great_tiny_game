@@ -1,8 +1,5 @@
 onDom ->
 
-  update = (diff, time) ->
-    spawn()
-    
   modelEvents = _.extend {}, Backbone.Events
   viewEvents = _.extend {}, Backbone.Events
   
@@ -55,16 +52,16 @@ onDom ->
         name: "Garcia",
         portrait: "garcia",
         items: new (Collection.extend model: Item)([
-          {id: 1, name: "Pistol", color: "red"}
-          {id: 2, name: "Sword Stick", color: "blue"}
+          {id: 1, name: "Tongue of the Demagogue", type: "political"}
+          {id: 2, name: "Chastity Belt", type: "moral"}
         ])
     }
     {
         name: "Artez",
         portrait: "artez",
         items: new (Collection.extend model: Item)([
-          {id: 1, name: "Shield-Latern", color: "red"}
-          {id: 2, name: "Blunderbuss", color: "blue"}
+          {id: 1, name: "Sword-stick", type: "physical"}
+          {id: 2, name: "Louis XV's Letter of Marque", type: "financial"}
         ])
     }
   ]
@@ -99,7 +96,7 @@ onDom ->
      rect = enemiesView.getView(enemy).el.getBoundingClientRect()
      if (targetRect.left < rect.left < targetRect.right) or
         (targetRect.left < rect.right < targetRect.right)
-       enemy.hit()
+       enemy.hit(item)
 
   views.members.forEach (member) ->
     member.bind "activate", (item) -> resolveActivation(item)
