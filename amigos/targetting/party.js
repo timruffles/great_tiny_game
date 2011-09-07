@@ -28,14 +28,14 @@ Item = Model.extend({
 });
 MemberView = View.extend({
   className: "member",
-  template: "<div class=\"portrait\">\n  <img src=\"img/{{name}}.png\" />\n  {{name}}\n</div>\n{{#item}}\n  <span class=\"item\" style=\"color:{{color}}\">\n    {{name}}\n  </span>\n{{/item}}\n<span class=\"choose\">\n    Edit\n</span>",
+  template: "<div>\n  <img class=\"portrait\" src=\"img/{{name}}.png\" />\n  {{name}}\n</div>\n{{#item}}\n  <span class=\"item\" style=\"color:{{color}}\">\n    {{name}}\n  </span>\n{{/item}}\n<span class=\"choose\">\n    Edit\n</span>",
   events: {
     ".choose click": "change",
-    ".portrait click": "trigger"
+    ".portrait click": "activate"
   },
   initialize: function(_arg) {
     this.itemChooser = _arg.itemChooser;
-    _.bindAll(this, "render", "change", "trigger");
+    _.bindAll(this, "render", "change", "activate");
     this.model.bind("change", this.render);
     return this.render();
   },
@@ -51,8 +51,10 @@ MemberView = View.extend({
     this.itemChooser.render();
     return this.itemChooser.toggle();
   },
-  trigger: function() {
-    return this.model.get("active").trigger();
+  activate: function() {
+    if (this.model.get("active")) {
+      return this.trigger("activate", this.model.get("active"));
+    }
   }
 });
 idEvent = function(fn) {

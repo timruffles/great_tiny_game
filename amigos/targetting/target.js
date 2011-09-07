@@ -1,4 +1,4 @@
-var $, CMDS, Collection, DoomButton, EnemiesView, Enemy, EnemyView, Level, Lives, Model, Target, View, animFrame, animate, createName, doc, eventSplitter, onDom, p, prefixes, toHtml, types;
+var $, CMDS, Collection, EnemiesView, Enemy, EnemyView, Level, Lives, Model, Target, View, animFrame, animate, createName, doc, eventSplitter, onDom, p, prefixes, toHtml, types;
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 doc = document;
 $ = doc.querySelectorAll;
@@ -89,6 +89,7 @@ View.prototype = {
   }
 };
 View.extend = Backbone.Collection.extend;
+_.extend(View.prototype, Backbone.Events);
 Collection = Backbone.Collection;
 p = console.log.bind(console);
 animFrame = function(fn, el) {
@@ -201,7 +202,9 @@ EnemyView = View.extend({
     return this.model.hit();
   },
   die: function() {
-    return this.el.parentNode.removeChild(this.el);
+    if (this.el.parentNode) {
+      return this.el.parentNode.removeChild(this.el);
+    }
   }
 });
 EnemiesView = View.extend({
@@ -293,24 +296,5 @@ Lives = View.extend({
   },
   render: function() {
     return this.el.innerHTML = this.model.get("lives");
-  }
-});
-DoomButton = View.extend({
-  initialize: function(_arg) {
-    this.target = _arg.target, this.enemiesView = _arg.enemiesView;
-    _.bindAll(this, "fire");
-    return this.el.on("click", this.fire);
-  },
-  fire: function(evt) {
-    var targetRect;
-    targetRect = this.target.getBoundingClientRect();
-    this.collection.filter(__bind(function(enemy) {
-      var rect, _ref, _ref2;
-      rect = this.enemiesView.getView(enemy).el.getBoundingClientRect();
-      if (((targetRect.left < (_ref = rect.left) && _ref < targetRect.right)) || ((targetRect.left < (_ref2 = rect.right) && _ref2 < targetRect.right))) {
-        return enemy.hit();
-      }
-    }, this));
-    return evt.preventDefault();
   }
 });

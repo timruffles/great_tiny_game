@@ -55,6 +55,7 @@ View:: =
             
     
 View.extend = Backbone.Collection.extend
+_.extend View::, Backbone.Events
 Collection = Backbone.Collection
 
 #debug
@@ -140,7 +141,8 @@ EnemyView = View.extend
   hit: ->
     @model.hit()
   die: ->
-    @el.parentNode.removeChild(@el)
+    if @el.parentNode
+      @el.parentNode.removeChild(@el)
 EnemiesView = View.extend
   initialize: ->
     _.bindAll this, "add", "remove"
@@ -204,20 +206,4 @@ Lives = View.extend
   render: ->
     @el.innerHTML = @model.get("lives")
     
-DoomButton = View.extend
-  initialize: ({@target,@enemiesView}) ->
-    _.bindAll this, "fire"
-    @el.on "click", @fire
-  fire: (evt) ->
-    targetRect = @target.getBoundingClientRect()
-    # quick hack - need to neatent this up and properly 
-    # relate view to model
-    @collection.filter (enemy) =>
-      rect = @enemiesView.getView(enemy).el.getBoundingClientRect()
-      if (targetRect.left < rect.left < targetRect.right) or
-         (targetRect.left < rect.right < targetRect.right)
-        enemy.hit()
-    evt.preventDefault()
-  
-
   

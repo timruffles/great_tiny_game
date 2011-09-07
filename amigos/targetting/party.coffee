@@ -15,8 +15,8 @@ Item = Model.extend
 MemberView = View.extend
   className: "member"
   template: """
-    <div class="portrait">
-      <img src="img/{{name}}.png" />
+    <div>
+      <img class="portrait" src="img/{{name}}.png" />
       {{name}}
     </div>
     {{#item}}
@@ -30,20 +30,25 @@ MemberView = View.extend
   """
   events: 
     ".choose click": "change"
-    ".portrait click": "trigger"
+    ".portrait click": "activate"
   initialize: ({@itemChooser}) ->
-    _.bindAll this, "render","change","trigger"
+    _.bindAll this, "render","change","activate"
     @model.bind "change", @render
     @render()
   render: ->
-    @el.innerHTML = toHtml(@template,_.extend @model.toJSON(), item: @model.get("active")?.toJSON())
+    @el.innerHTML = toHtml(
+      @template,
+      _.extend @model.toJSON(), 
+               item: @model.get("active")?.toJSON()
+    )
   change: ->
     p "change"
     @itemChooser.model = @model
     @itemChooser.render()
     @itemChooser.toggle()
-  trigger: ->
-    @model.get("active").trigger()
+  activate: ->
+    if @model.get "active"
+      @trigger "activate", @model.get("active")
     
 idEvent = (fn) ->
   (evt) ->
