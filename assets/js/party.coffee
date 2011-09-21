@@ -73,6 +73,6 @@ ItemChooser = View.extend
     @model.select(id)
     @toggle()
   toggle: ->
-    @el.classList.toggle "hidden"
+    Z(@el).toggleClass "hidden"
       
       

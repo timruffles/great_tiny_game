@@ -45,7 +45,7 @@ View.prototype = {
   make: function() {
     this.el = doc.createElement("div");
     if (this.className) {
-      return this.el.classList.add(this.className);
+      return Z(this.el).addClass(this.className);
     }
   },
   render: function() {
@@ -95,8 +95,8 @@ Collection = Backbone.Collection;
 p = function() {
   return typeof console.log === "function" ? console.log(arguments) : void 0;
 };
-animMethod = window.webkitRequestAnimationFrame || (function(fn) {
-  return setTimeout(fn, 1000 / 60);
+animMethod = (function(fn) {
+  return setTimeout(fn, 1000 / 60, +new Date);
 });
 animFrame = function(fn, el) {
   return animMethod(fn, el);
@@ -106,9 +106,11 @@ animate = function(fn, el) {
   if (!fn) {
     throw new Error("No fn");
   }
-  control = {
-    stopped: false
-  };
+  if (!control) {
+    control = {
+      stopped: false
+    };
+  }
   animFrame(function(time) {
     fn(time);
     if (!control.stoppped) {
@@ -213,7 +215,7 @@ EnemyView = View.extend({
     }
     this.el.style.right = this.model.get("travelled");
     this.el.className = "enemy";
-    return this.el.classList.add(this.model.get("type"));
+    return Z(this.el).addClass(this.model.get("type"));
   },
   remove: function() {
     if (this.el.parentNode) {

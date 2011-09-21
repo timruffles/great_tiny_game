@@ -30,7 +30,7 @@ View:: =
   initialize: (opts) ->
   make: ->
     @el = doc.createElement "div"
-    @el.classList.add @className if @className
+    Z(@el).addClass @className if @className
   render: ->
     @el.innerHTML = toHtml(this.template,this.transform())
   transform: ->
@@ -63,13 +63,14 @@ Collection = Backbone.Collection
 p = ->
   console.log?(arguments)
 
-animMethod = window.webkitRequestAnimationFrame || ((fn) -> setTimeout fn, 1000 / 60)
+animMethod = ((fn) -> setTimeout fn, 1000 / 60, +new Date)
 animFrame = (fn,el) ->
   animMethod fn, el
 
 animate = (fn,el) ->
   throw new Error "No fn" unless fn
-  control = stopped: false
+  if !control
+    control = stopped: false
   animFrame (time) ->
     fn(time)
     animate fn, el unless control.stoppped
@@ -149,7 +150,7 @@ EnemyView = View.extend
       @needsDraw = false
     @el.style.right = @model.get("travelled")
     @el.className = "enemy"
-    @el.classList.add @model.get("type")
+    Z(@el).addClass @model.get("type")
   remove: ->
     if @el.parentNode
       @el.parentNode.removeChild(@el)

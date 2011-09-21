@@ -84,6 +84,6 @@ ItemChooser = View.extend({
     return this.toggle();
   }),
   toggle: function() {
-    return this.el.classList.toggle("hidden");
+    return Z(this.el).toggleClass("hidden");
   }
 });
