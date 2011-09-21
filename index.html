@@ -1,63 +1,95 @@
-<!doctype html>
-<html>
-	<head>
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width" />
-		<title>Game Challenge #1</title>
-		<link rel="stylesheet" href="assets/css/master.css" type="text/css" media="screen" />
-		
-		<script src="phonegap.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="assets/js/xui.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="assets/js/lawnchair/adaptors/LawnchairAdaptorHelpers.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="assets/js/lawnchair/adaptors/DOMStorageAdaptor.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="assets/js/lawnchair/adaptors/WebkitSQLiteAdaptor.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="assets/js/lawnchair/Lawnchair.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="assets/js/dsl.js" type="text/javascript" charset="utf-8"></script>
-		
-		<script src="assets/js/app.js" type="text/javascript" charset="utf-8"></script>
-		
-	</head>
-	<body>
- 		<div id="title_bar">Phone<strong>Gap</strong> Training App</div>
-
-		<div id="welcome" class="view">
-		  <div class="app_button" id="map_button">Show My Location</div>
-  	      <div class="app_button" id="settings_button">Settings</div>
-		</div>
-
-		<div id="map" class="view">
-		  <div class="map_image">
-              <img id="static_map" src="assets/img/staticmap.png">
-		  </div>
-		  <p>This is where you are</p>
-		  <div class="app_button" id="welcome_button">Go Back</div>
-		</div>
-
-		<div id="settings" class="view">
-		  <form id="settings_form">
-		    <fieldset>
-		      <legend>Map Type</legend>
-			  <input type="radio" name="map" value="roadmap" checked>Road Map<br/>
-		      <input type="radio" name="map" value="satellite">Satellite<br/>
-		      <input type="radio" name="map" value="terrain">Terrain<br/>
-		      <input type="radio" name="map" value="hybrid">Hybrid<br/>
-		    </fieldset>
-		    <fieldset>
-		      <legend>Zoom Level</legend>
-  		      <input type="radio" name="zoom" value="10">Super Far<br/>
-  		      <input type="radio" name="zoom" value="12">Far<br/>
-  		      <input type="radio" name="zoom" value="15" checked>Normal<br/>
-  		      <input type="radio" name="zoom" value="18">Close<br/>
-  		      <input type="radio" name="zoom" value="20">Super Close<br/>
-  		     </fieldset>
-		      <button id="save_button">Save</button>
-	      </form>
-		</div>
-
-	</body>
-</html>
+<script src="assets/js/mustache.js" type="text/javascript" charset="utf-8"></script>
+<script src="assets/js/underscore.js" type="text/javascript" charset="utf-8"></script>
+<script src="assets/js/backbone.js" type="text/javascript" charset="utf-8"></script>
+<script src="assets/js/target.js" type="text/javascript" charset="utf-8"></script>
+<script src="assets/js/party.js" type="text/javascript" charset="utf-8"></script>
+<script src="assets/js/prototype_boot.js" type="text/javascript" charset="utf-8"></script>
+<style>
+  #threats {
+    width: 400px;
+    height: 200px;
+    border: 1px solid #000;
+    position: relative;
+  }
+  #target {
+    border: 4px solid yellow;
+    height: 100%;
+    width: 100px;
+    position: absolute;
+  }
+  .enemy {
+    position: absolute;
+    height: 100%;
+    width: 50px;
+    background: red;
+  }
+  body {
+    -webkit-user-select: none;
+  }
+</style>
+<style type="text/css" media="screen">
+  .hidden {
+    display: none;
+  }
+  .chooser {
+    background: #eee;
+    width: 40%;
+    overflow: auto;
+  }
+  .chooser .item {
+    display: block;
+    float: left;
+    width: 100px;
+    height: 100px;
+  }
+  .chooser .item:hover {
+    border: 1px solid yellow;
+  }
+</style>
+<style type="text/css" media="screen">
+  .member {
+    float: left;
+    width: 200px;
+  }
+  .enemy.moral {
+    background-color: #CB5AFF;
+  }
+  .enemy.political {
+    background-color: #59AFFF;
+  }
+  .enemy.financial {
+    background-color: #FFEC59;
+  }
+  .enemy.physical {
+    background-color: red;
+  }
+  .item.moral {
+    background: #CB5AFF;
+  }
+  .item.political {
+    background: #59AFFF;
+  }
+  .item.financial {
+    background: #FFEC59;
+  }
+  .item.physical {
+    background: red;
+  }
+  .active_item.moral {
+    color:#CB5AFF;
+  }
+  .active_item.political {
+    color:#59AFFF;
+  }
+  .active_item.financial {
+    color:#FFEC59;
+  }
+  .active_item.physical {
+    color:red;
+  }
+</style>
+<div id="threats">
+  <div id="target"></div>
+</div>
+<div id="members">
+</div>
