@@ -16,7 +16,7 @@ MemberView = View.extend
   className: "member"
   template: """
     <div>
-      <img class="portrait" src="./img/{{portrait}}.png" />
+      <img class="portrait" src="assets/img/{{portrait}}.png" />
       {{name}}
     </div>
     {{#item}}

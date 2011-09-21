@@ -62,7 +62,9 @@ Collection = Backbone.Collection
 #debug
 p = console.log.bind(console)
 
-animFrame = (fn,el) -> window.webkitRequestAnimationFrame fn, el
+animMethod = window.webkitRequestAnimationFrame || ((fn) -> setTimeout fn, 1000 / 60)
+animFrame = (fn,el) ->
+  animMethod fn, el
 
 animate = (fn,el) ->
   throw new Error "No fn" unless fn

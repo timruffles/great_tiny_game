@@ -1,4 +1,4 @@
-var $, CMDS, Collection, EnemiesView, Enemy, EnemyView, Level, Lives, Model, TYPES, Target, View, animFrame, animate, createName, doc, eventSplitter, onDom, p, prefixes, toHtml, types;
+var $, CMDS, Collection, EnemiesView, Enemy, EnemyView, Level, Lives, Model, TYPES, Target, View, animFrame, animMethod, animate, createName, doc, eventSplitter, onDom, p, prefixes, toHtml, types;
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 doc = document;
 $ = doc.querySelectorAll;
@@ -93,8 +93,11 @@ View.extend = Backbone.Collection.extend;
 _.extend(View.prototype, Backbone.Events);
 Collection = Backbone.Collection;
 p = console.log.bind(console);
+animMethod = window.webkitRequestAnimationFrame || (function(fn) {
+  return setTimeout(fn, 1000 / 60);
+});
 animFrame = function(fn, el) {
-  return window.webkitRequestAnimationFrame(fn, el);
+  return animMethod(fn, el);
 };
 animate = function(fn, el) {
   var control;
