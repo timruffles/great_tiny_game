@@ -60,7 +60,8 @@ _.extend View::, Backbone.Events
 Collection = Backbone.Collection
 
 #debug
-p = console.log.bind(console)
+p = ->
+  console.log?.apply(this,arguments)
 
 animMethod = window.webkitRequestAnimationFrame || ((fn) -> setTimeout fn, 1000 / 60)
 animFrame = (fn,el) ->
