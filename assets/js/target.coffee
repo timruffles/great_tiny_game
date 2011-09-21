@@ -61,7 +61,7 @@ Collection = Backbone.Collection
 
 #debug
 p = ->
-  console.log?.apply(this,arguments)
+  console.log?(arguments)
 
 animMethod = window.webkitRequestAnimationFrame || ((fn) -> setTimeout fn, 1000 / 60)
 animFrame = (fn,el) ->

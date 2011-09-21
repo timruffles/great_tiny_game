@@ -93,8 +93,7 @@ View.extend = Backbone.Collection.extend;
 _.extend(View.prototype, Backbone.Events);
 Collection = Backbone.Collection;
 p = function() {
-  var _ref;
-  return (_ref = console.log) != null ? _ref.apply(this, arguments) : void 0;
+  return typeof console.log === "function" ? console.log(arguments) : void 0;
 };
 animMethod = window.webkitRequestAnimationFrame || (function(fn) {
   return setTimeout(fn, 1000 / 60);
