@@ -5,92 +5,51 @@
 <script src="assets/js/target.js" type="text/javascript" charset="utf-8"></script>
 <script src="assets/js/party.js" type="text/javascript" charset="utf-8"></script>
 <script src="assets/js/prototype_boot.js" type="text/javascript" charset="utf-8"></script>
-<style>
-  #threats {
-    width: 400px;
-    height: 200px;
-    border: 1px solid #000;
-    position: relative;
-  }
-  #target {
-    border: 4px solid yellow;
-    height: 100%;
-    width: 100px;
-    position: absolute;
-  }
-  .enemy {
-    position: absolute;
-    height: 100%;
-    width: 50px;
-    background: red;
-  }
-  body {
-    -webkit-user-select: none;
-  }
-</style>
-<style type="text/css" media="screen">
-  .hidden {
-    display: none;
-  }
-  .chooser {
-    background: #eee;
-    width: 40%;
-    overflow: auto;
-  }
-  .chooser .item {
-    display: block;
-    float: left;
-    width: 100px;
-    height: 100px;
-  }
-  .chooser .item:hover {
-    border: 1px solid yellow;
-  }
-</style>
-<style type="text/css" media="screen">
-  .member {
-    float: left;
-    width: 200px;
-  }
-  .enemy.moral {
-    background-color: #CB5AFF;
-  }
-  .enemy.political {
-    background-color: #59AFFF;
-  }
-  .enemy.financial {
-    background-color: #FFEC59;
-  }
-  .enemy.physical {
-    background-color: red;
-  }
-  .item.moral {
-    background: #CB5AFF;
-  }
-  .item.political {
-    background: #59AFFF;
-  }
-  .item.financial {
-    background: #FFEC59;
-  }
-  .item.physical {
-    background: red;
-  }
-  .active_item.moral {
-    color:#CB5AFF;
-  }
-  .active_item.political {
-    color:#59AFFF;
-  }
-  .active_item.financial {
-    color:#FFEC59;
-  }
-  .active_item.physical {
-    color:red;
-  }
-</style>
-<div id="threats">
-  <div id="target"></div>
-</div>
-<div id="members">
+<link rel="stylesheet" href="assets/css/game.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+
+<div id="wrapper">
+  <div id="characters">
+    <div class="character">
+      <img class="portrait" />
+      <table class="stats">
+        <tr>
+          <td>Cunning</td><td>3</td>
+          <td>Wit</td><td>3</td>
+          <td>Perseverance</td><td>3</td>
+        </tr>
+      </table>
+    </div>
+    <div class="item_collections">
+      <div class="container">
+        <ul class="items">
+          <li><img src="assets/img/pistol.png" /></li>
+          <li><div style="background:blue;height:20px;width:20px;"/></li>
+          <li>Snail</li>
+          <li>Snail</li>
+          <li>Snail</li>
+          <li>Snail</li>
+          <li>Snail</li>
+          <li>Snail</li>
+          <li>Snail</li>
+        </ul>
+      </div>
+      <div class="container">
+        <ul class="items">
+          <li>Beetle</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div id="in_play">
+    <div class="character">
+    </div>
+    <div class="character">
+    </div>
+    <div class="character">
+    </div>
+    <div class="dial">
+    </div>
+  </div>
+  <div id="enemies">
+  </div>
 </div>
