@@ -47,6 +47,7 @@ MemberView = View.extend({
   },
   change: function() {
     p("change");
+    this.pub.trigger("rpg:enter");
     this.itemChooser.model = this.model;
     this.itemChooser.render();
     return this.itemChooser.toggle();
@@ -81,7 +82,8 @@ ItemChooser = View.extend({
   },
   select: idEvent(function(id) {
     this.model.select(id);
-    return this.toggle();
+    this.toggle();
+    return this.pub.trigger("rpg:exit");
   }),
   toggle: function() {
     return Z(this.el).toggleClass("hidden");

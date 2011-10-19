@@ -1,6 +1,6 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 onDom(function() {
-  var animation, enemies, enemiesView, gameTime, lastTime, level, lives, maxDiff, members, mems, modelEvents, models, resolveActivation, target, ticker, track, view, viewEvents, views, _i, _len, _ref;
+  var animation, enemies, enemiesView, game, gameTime, lastTime, level, lives, maxDiff, members, mems, modelEvents, models, resolveActivation, target, ticker, track, view, viewEvents, views, _i, _len, _ref;
   modelEvents = _.extend({}, Backbone.Events);
   viewEvents = _.extend({}, Backbone.Events);
   View.prototype.pub = viewEvents;
@@ -31,16 +31,27 @@ onDom(function() {
   lastTime = new Date - 0;
   gameTime = 0;
   maxDiff = 1000;
+  game = {
+    paused: false
+  };
   ticker = function(time) {
     var diff;
-    diff = time - lastTime;
-    gameTime += Math.min(diff, maxDiff);
-    diff /= 1000;
-    modelEvents.trigger("tick", diff, gameTime);
-    viewEvents.trigger("tick", diff, gameTime);
+    if (!game.paused) {
+      diff = time - lastTime;
+      gameTime += Math.min(diff, maxDiff);
+      diff /= 1000;
+      modelEvents.trigger("tick", diff, gameTime);
+      viewEvents.trigger("tick", diff, gameTime);
+    }
     return lastTime = time;
   };
   animation = animate(ticker);
+  viewEvents.bind("rpg:enter", function() {
+    return game.paused = true;
+  });
+  viewEvents.bind("rpg:exit", function() {
+    return game.paused = false;
+  });
   members = [
     {
       name: "Garcia",

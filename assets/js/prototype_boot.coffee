@@ -37,15 +37,22 @@ onDom ->
   lastTime = new Date - 0
   gameTime = 0
   maxDiff = 1000
+  
+  game = 
+    paused: false
   ticker = (time) ->
-    diff = (time - lastTime)
-    gameTime += Math.min diff, maxDiff
-    diff /= 1000
-    modelEvents.trigger "tick", diff, gameTime
-    viewEvents.trigger "tick", diff, gameTime
+    unless game.paused
+      diff = (time - lastTime)
+      gameTime += Math.min diff, maxDiff
+      diff /= 1000
+      modelEvents.trigger "tick", diff, gameTime
+      viewEvents.trigger "tick", diff, gameTime
     lastTime = time
     
   animation = animate ticker
+  
+  viewEvents.bind "rpg:enter", -> game.paused = true
+  viewEvents.bind "rpg:exit", -> game.paused = false
    
   members = [
     {

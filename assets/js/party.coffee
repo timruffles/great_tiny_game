@@ -43,6 +43,7 @@ MemberView = View.extend
     )
   change: ->
     p "change"
+    @pub.trigger "rpg:enter"
     @itemChooser.model = @model
     @itemChooser.render()
     @itemChooser.toggle()
@@ -72,6 +73,7 @@ ItemChooser = View.extend
   select: idEvent (id) ->
     @model.select(id)
     @toggle()
+    @pub.trigger "rpg:exit"
   toggle: ->
     Z(@el).toggleClass "hidden"
       
