@@ -50,7 +50,7 @@ MemberView = View.extend({
     this.pub.trigger("rpg:enter");
     this.itemChooser.model = this.model;
     this.itemChooser.render();
-    return this.itemChooser.toggle();
+    return this.itemChooser.toggle(true);
   },
   activate: function() {
     if (this.model.get("active")) {
@@ -69,8 +69,7 @@ ItemChooser = View.extend({
   className: "chooser",
   template: "{{#items}}\n  <li data-id=\"{{id}}\" class=\"item {{type}}\">{{name}}</option>\n{{/items}}",
   initialize: function() {
-    _.bindAll(this, "select");
-    return this.toggle();
+    return _.bindAll(this, "select");
   },
   render: function() {
     return this.el.innerHTML = toHtml(this.template, {
@@ -82,10 +81,10 @@ ItemChooser = View.extend({
   },
   select: idEvent(function(id) {
     this.model.select(id);
-    this.toggle();
+    this.toggle(false);
     return this.pub.trigger("rpg:exit");
   }),
-  toggle: function() {
-    return Z(this.el).toggleClass("hidden");
+  toggle: function(onOff) {
+    return Z(this.el).toggleClass("hidden", !onOff);
   }
 });

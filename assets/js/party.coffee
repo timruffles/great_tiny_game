@@ -11,7 +11,6 @@ Member = Model.extend
 Item = Model.extend
   toString: -> "Item"
 
-
 MemberView = View.extend
   className: "member"
   template: """
@@ -46,7 +45,7 @@ MemberView = View.extend
     @pub.trigger "rpg:enter"
     @itemChooser.model = @model
     @itemChooser.render()
-    @itemChooser.toggle()
+    @itemChooser.toggle(true)
   activate: ->
     if @model.get "active"
       @trigger "activate", @model.get("active")
@@ -65,16 +64,15 @@ ItemChooser = View.extend
   """
   initialize: ->
     _.bindAll this, "select"
-    @toggle()
   render: ->
     @el.innerHTML = toHtml(@template,items: @model.items.toJSON())
   events:
     ".item click": "select"
   select: idEvent (id) ->
     @model.select(id)
-    @toggle()
+    @toggle(false)
     @pub.trigger "rpg:exit"
-  toggle: ->
-    Z(@el).toggleClass "hidden"
+  toggle: (onOff) ->
+    Z(@el).toggleClass "hidden", !onOff
       
       
