@@ -139,14 +139,14 @@ CMDS = {
   move: "mousemove"
 };
 Target = function(target, track) {
-  var body, lastX, left, offset, onMove, right, targetWidth, trackBox, update, _ref, _ref2;
-  targetWidth = target.offsetWidth;
+  var body, bottom, lastY, offset, onMove, targetHeight, top, trackBox, update, _ref, _ref2;
+  targetHeight = target.offsetHeight;
   trackBox = track.getBoundingClientRect();
-  _ref = [0, trackBox.width - targetWidth], left = _ref[0], right = _ref[1];
-  _ref2 = [0, 0], lastX = _ref2[0], offset = _ref2[1];
+  _ref = [0, trackBox.height - targetHeight], top = _ref[0], bottom = _ref[1];
+  _ref2 = [0, 0], lastY = _ref2[0], offset = _ref2[1];
   body = document.body;
   target.on(CMDS.start, function(evt) {
-    lastX = event.screenX;
+    lastY = event.screenY;
     return body.on(CMDS.move, onMove);
   });
   body.on(CMDS.stop, function() {
@@ -154,15 +154,15 @@ Target = function(target, track) {
   });
   onMove = function(evt) {
     var diff, _ref3;
-    diff = evt.screenX - lastX;
-    lastX = evt.screenX;
-    if ((0 <= (_ref3 = offset + diff) && _ref3 <= right)) {
+    diff = evt.screenY - lastY;
+    lastY = evt.screenY;
+    if ((top <= (_ref3 = offset + diff) && _ref3 <= bottom)) {
       offset += diff;
       return update();
     }
   };
   return update = (function() {
-    return target.style.left = offset;
+    return target.style.top = offset;
   }).maxOncePerFrame(target);
 };
 Enemy = Model.extend({
@@ -213,7 +213,7 @@ EnemyView = View.extend({
       View.prototype.render.call(this);
       this.needsDraw = false;
     }
-    this.el.style.right = this.model.get("travelled");
+    this.el.style.top = this.model.get("travelled");
     this.el.className = "enemy";
     return Z(this.el).addClass(this.model.get("type"));
   },

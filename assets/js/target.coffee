@@ -92,24 +92,24 @@ CMDS =
   move: "mousemove"
   
 Target = (target,track) ->
-  targetWidth = target.offsetWidth
+  targetHeight = target.offsetHeight
   trackBox = track.getBoundingClientRect()
-  [left,right] = [0,trackBox.width - targetWidth]
-  [lastX,offset] = [0,0]
+  [top,bottom] = [0,trackBox.height - targetHeight]
+  [lastY,offset] = [0,0]
   body = document.body
   target.on CMDS.start, (evt) ->
-    lastX = event.screenX
+    lastY = event.screenY
     body.on CMDS.move, onMove
   body.on CMDS.stop, -> 
     body.ignore CMDS.move, onMove
   onMove = (evt) ->
-    diff = evt.screenX - lastX
-    lastX = evt.screenX
-    if 0 <= offset + diff <= right
+    diff = evt.screenY - lastY
+    lastY = evt.screenY
+    if top <= offset + diff <= bottom
       offset += diff
       update()
   update = (() ->
-    target.style.left = offset
+    target.style.top = offset
   ).maxOncePerFrame(target)
   
 Enemy = Model.extend
@@ -148,7 +148,7 @@ EnemyView = View.extend
     if @needsDraw
       View::render.call(this)
       @needsDraw = false
-    @el.style.right = @model.get("travelled")
+    @el.style.top = @model.get("travelled")
     @el.className = "enemy"
     Z(@el).addClass @model.get("type")
   remove: ->
