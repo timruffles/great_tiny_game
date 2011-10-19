@@ -1,0 +1,226 @@
+doc = document
+$ = doc.querySelectorAll
+doc.byId = document.getElementById
+Element::on = Element::addEventListener
+Element::ignore = Element::removeEventListener
+Element::$ = Element::querySelectorAll
+
+toHtml = Mustache.to_html
+
+String::toFloat = -> if this + "" == "" then 0 else parseFloat this
+String::toInt = -> if this + "" == "" then 0 else parseInt this
+
+onDom = (fn) ->
+  window.addEventListener "load", fn
+
+Model = Backbone.Model
+View = (opts)->
+  @construct(opts)
+  @initialize(opts)
+  p "called #{@el}"
+  
+TYPES = ["physical","financial","political","moral"]
+eventSplitter = /(\S+)(?:\s+(\S+))?/
+
+View:: =
+  construct: ({@collection,@model,@el}) ->
+    @make() unless @el
+    @initialize(arguments[0])
+    @delegate()
+  initialize: (opts) ->
+  make: ->
+    @el = doc.createElement "div"
+    Z(@el).addClass @className if @className
+  render: ->
+    @el.innerHTML = toHtml(this.template,this.transform())
+  transform: ->
+    @model.toJSON()
+  delegate: ->
+    return unless @events
+    for eventSetup, handler of @events
+      do (eventSetup, handler) =>
+        handler = @[handler]
+        if match = eventSplitter.exec eventSetup
+          [whole, selector, event] = match
+        unless event
+          event = selector
+        if selector
+          @el.on event, (evt) ->
+            tester = doc.createElement("div")
+            tester.appendChild(evt.target.cloneNode(false))
+            if tester.$(selector).length > 0
+              handler(evt)
+        else
+          @el.on event, handler
+              
+            
+    
+View.extend = Backbone.Collection.extend
+_.extend View::, Backbone.Events
+Collection = Backbone.Collection
+
+#debug
+p = ->
+  console.log?(arguments)
+
+animMethod = ((fn) -> setTimeout fn, 1000 / 60, +new Date)
+animFrame = (fn,el) ->
+  animMethod fn, el
+
+animate = (fn,el) ->
+  throw new Error "No fn" unless fn
+  if !control
+    control = stopped: false
+  animFrame (time) ->
+    fn(time)
+    animate fn, el unless control.stoppped
+  , el
+  control
+
+Function::maxOncePerFrame = (el) ->
+  throttler = {}
+  invoke = this
+  ->
+    unless throttler.throttle
+      invoke()
+      throttler.throttle = true
+      animFrame (-> throttler.throttle = false), el
+
+CMDS = 
+  start: "mousedown"
+  stop: "mouseup"
+  move: "mousemove"
+  
+Target = (target,track) ->
+  targetHeight = target.offsetHeight
+  trackBox = track.getBoundingClientRect()
+  [top,bottom] = [0,trackBox.height - targetHeight]
+  [lastY,offset] = [0,0]
+  body = document.body
+  target.on CMDS.start, (evt) ->
+    lastY = event.screenY
+    body.on CMDS.move, onMove
+  body.on CMDS.stop, -> 
+    body.ignore CMDS.move, onMove
+  onMove = (evt) ->
+    diff = evt.screenY - lastY
+    lastY = evt.screenY
+    if top <= offset + diff <= bottom
+      offset += diff
+      update()
+  update = (() ->
+    target.style.top = offset
+  ).maxOncePerFrame(target)
+  
+Enemy = Model.extend
+  initialize: ->
+    @pub.bind "tick", (diff) =>
+      @set travelled: @get("travelled") + @get("speed") * diff
+      if @get("travelled") > 350 && !@attacked
+        @trigger "attack", this
+        @attacked = true
+        @trigger "left", this
+  hit: (item) ->
+    if item.get("type") == @get("type")
+      @trigger "died", this
+    else
+      @trigger "deflect", this
+Enemy.Collection = Collection.extend
+  initialize: ->
+    @bind "died", (enemy) =>
+      @remove enemy
+    @bind "left", (enemy) => @remove enemy
+  model: Enemy
+
+EnemyView = View.extend
+  className: "enemy"
+  initialize: ->
+    _.bindAll this, "render", "remove"
+    @needsDraw = true
+    @el.style.right = 0
+    @pub.bind "tick", @render
+    @model.bind "died", @remove
+    @model.bind "left", @remove
+  template: """
+    <span class="name">{{name}}</span>
+  """
+  render: ->
+    if @needsDraw
+      View::render.call(this)
+      @needsDraw = false
+    @el.style.top = @model.get("travelled")
+    @el.className = "enemy"
+    Z(@el).addClass @model.get("type")
+  remove: ->
+    if @el.parentNode
+      @el.parentNode.removeChild(@el)
+EnemiesView = View.extend
+  initialize: ->
+    _.bindAll this, "add", "remove"
+    @collection.bind "add", @add
+    @collection.bind "removed", @remove
+    @viewsById = {}
+  add: (enemy) ->
+    @viewsById[enemy.cid] = enemyView = new EnemyView
+      model: enemy
+    @el.appendChild enemyView.el
+  remove: (enemy) ->
+    delete @viewsById[enemy.cid]
+  getView: (enemy) ->
+    @viewsById[enemy.cid || enemy]
+
+Number::sample = -> Math.round(Math.random() * this)
+Array::sample = -> this[(this.length - 1).sample()]
+
+
+types = ["Elephant","Pesant","Janissary","Rogue","Ruffian","Looter","Hippo Rider","Ostrich Herder","Brute"]
+prefixes = ["","","Armoured","Enraged","Grubby","Sneaky","Quick"]
+createName = ->
+  amount = 3.sample()
+  type = types.sample()
+  prefix = prefixes.sample()
+  description = "#{prefix} #{type}"
+  if amount > 1
+    "Some #{description}s"
+  else
+    "A #{description}"
+
+Level = Model.extend
+  initialize: (attrs, {@enemies}) ->
+    @set spawnNext: 0
+    _.bindAll this, "tick"
+    @pub.bind "tick", @tick
+    @spawnTime = 6000
+    @spawnLimit = 3
+    @set score: 0
+    @enemies.bind "attack", =>
+      @set lives: (@get("lives") - 1)
+    @enemies.bind "died", =>
+      unless @spawnTime <= 0
+        @spawnTime -= 2000
+        @spawnLimit += 1
+      @set score: @get("score") + 500
+    @bind "change:lives", (level,lives) => 
+      if lives == 0
+        @trigger "lost"
+  tick: (diff,gameTime) ->
+    if gameTime > @get("spawnNext") && @enemies.length < @spawnLimit
+      @enemies.add new Enemy
+        speed: 50 + 50.sample()
+        travelled: 0
+        name: createName()
+        type: TYPES.sample()
+      @set spawnNext: gameTime + 1000 + @spawnTime.sample()
+      
+Lives = View.extend
+  className: "lives"
+  initialize: ->
+    _.bindAll this, "render"
+    @model.bind "change", @render
+  template:
+    """
+      <span class="lives">Lives: {{lives}}</span>
+      <span class="score">Score: {{score}}</span>
+    """
+    
+  
